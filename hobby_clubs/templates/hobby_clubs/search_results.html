@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Results</title>
+  <style>
+    body {
+      background-color: #e2e0fb;
+      font-family: "Comic Sans MS";
+    }
+
+    h1 {
+      font-size: 32px;
+      text-align: center;
+    }
+
+    /* 添加列表项的样式 */
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 20px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      position: relative;
+      /* 添加相对定位 */
+    }
+
+    /* 添加链接的样式 */
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Search Results</h1>
+  <ul>
+    {% for club in matching_clubs %}
+    <li>
+      <strong>Club Name:</strong> {{ club.Club_Name }}<br>
+      <strong>Postal Code:</strong> {{ club.Postal_Code }}<br>
+      <strong>Address:</strong> {{ club.Address }}<br>
+      <strong>Age:</strong> {{ club.Age }}<br>
+      <strong>Category:</strong> {{ club.Category }}<br>
+      <strong>Activity:</strong> {{ club.Activity }}<br>
+      <strong>Website:</strong> <a href="{{ club.Website }}">{{ club.Website }}</a><br>
+
+    </li>
+    {% endfor %}
+  </ul>
+</body>
+
+</html>

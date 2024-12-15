@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Art Clubs</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #cfcede;
+    }
+
+    a {
+      font-size: 18px;
+      text-decoration: none;
+      right: 10px;
+    }
+
+    a:hover {
+      color: #d65e5e;
+    }
+
+    .front {
+      color: #df3c3c;
+
+    }
+
+    .back {
+
+      color: #bd4d4d;
+
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 50px;
+      background-color: rgba(243, 207, 229, 0.8);
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      background-image: url("/static/images/art.jpg");
+      background-size: cover;
+      background-position: top;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: hsl(303, 40%, 55%);
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    li {
+      width: 45%;
+      background-color: #d1bed1;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+
+    li:hover {
+      transform: translateY(-5px);
+    }
+
+    .club-name {
+      font-weight: bold;
+      font-size: 24px;
+      color: #333;
+    }
+
+    .club-details {
+      margin-top: 15px;
+    }
+
+    .club-details p {
+      margin: 8px 0;
+      font-size: 16px;
+      color: #555;
+    }
+
+    .action-btns {
+      margin-top: 20px;
+    }
+
+    .action-btn {
+      margin-right: 10px;
+      padding: 10px 16px;
+      background-color: #d295b0;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-size: 16px;
+    }
+
+    .action-btn:hover {
+      background-color: #b07289;
+    }
+
+    .review-btns {
+      margin-top: 20px;
+    }
+
+    .review-btn {
+      margin-right: 10px;
+      padding: 10px 16px;
+      background-color: #d295b0;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-size: 16px;
+    }
+
+    .review-btn:hover {
+      background-color: #b07289;
+    }
+
+    .club-details img {
+      width: 30px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <a href="{% url 'hobby_clubs:index' %}" class="front">Back to Homepage</a>
+    <h1>Explore Your Artistic Side Here!</h1>
+    <ul>
+      {% for club in art_clubs %}
+      <li>
+        <div class="club-name">{{ club.club_name }}</div>
+        <div class="club-details">
+          <p><img src="/static/images/membership-card.png"> <strong>Club Name:</strong> {{ club.club_name }}</p>
+          <p><img src="/static/images/zip-code.png"> <strong>Postal Code:</strong> {{ club.postal_code }}</p>
+          <p><img src="/static/images/location-pin.png"> <strong>Address:</strong> {{ club.address }}</p>
+          <p><img src="/static/images/age-group.png"> <strong>Age:</strong> {{ club.age }}</p>
+          <p><img src="/static/images/categories.png"> <strong>Category:</strong> {{ club.category }}</p>
+          <p><img src="/static/images/mobile.png"> <strong>Activity:</strong>{{ club.activity }}</p>
+        </div>
+      </li>
+      {% empty %}
+      <li>No clubs available.</li>
+      {% endfor %}
+    </ul>
+    <a href="{% url 'hobby_clubs:index' %}" class="back">Back to Homepage</a>
+  </div>
+</body>
+
+</html>

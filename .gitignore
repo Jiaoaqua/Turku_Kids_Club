@@ -1,0 +1,45 @@
+
+.DS_Store
+.Trash
+Library/
+*.pyc
+__pycache__/
+
+# macOS 系统文件
+.DS_Store
+
+# Python 缓存文件
+*.pyc
+__pycache__/
+
+# 虚拟环境
+myenv/
+tkc_env/
+
+# CSV 文件（如果不是项目核心文件）
+*.csv
+# Python 缓存文件
+*.pyc
+__pycache__/
+
+# 虚拟环境
+myenv/
+tkc_env/
+
+# CSV 文件（如果不是项目核心文件）
+*.csv
+
+.DS_Store
+
+*.log
+
+
+*.sqlite3
+db.sqlite3
+
+.env
+
+.vscode/
+.idea/
+*.iml
+

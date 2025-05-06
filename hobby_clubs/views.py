@@ -1,13 +1,11 @@
 import csv
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
-from django.contrib import messages
-# from django.db.models import Avg  
-# from django.http import HttpResponse
 
-from .models import Club, Review, Rating
-from .forms import ReviewForm, RatingForm
+from .models import Club, Like, Review
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+
 
 def index(request):
     """The home page for Hobby Log."""
@@ -16,110 +14,28 @@ def index(request):
 
 @login_required
 def all_clubs(request):
-    clubs = []
-    with open('databasestore/clubs-info.csv', 'r', encoding='utf-8') as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            clubs.append(row)
+    clubs = Club.objects.all() 
     return render(request, 'hobby_clubs/all_clubs.html', {'clubs': clubs})
 
 
-
-from django.shortcuts import get_object_or_404
-
-from django.http import HttpResponseBadRequest
+@login_required
+def science_clubs(request):
+    science_clubs = Club.objects.filter(category='Science')
+    return render(request, 'hobby_clubs/science_clubs.html', {'science_clubs': science_clubs})
 
 @login_required
-def club(request, unique_identifier):
-    """Show a single club and all its reviews."""
-    club = get_object_or_404(Club, unique_identifier=unique_identifier)
-    reviews = club.reviews.order_by('-date_added')
-    
-    # Calculate the average rating
-    club.calculate_average_rating()
-    
-    # Retrieve the user's rating for the club
-    user_rating = Rating.objects.filter(club=club, user=request.user).first()
-    
-    context = {'club': club, 'reviews': reviews, 'user_rating': user_rating}
-    return render(request, 'hobby_clubs/club.html', context)
-
-
-
+def art_clubs(request):
+    art_clubs = Club.objects.filter(category='Art')
+    return render(request, 'hobby_clubs/art_clubs.html', {'art_clubs': art_clubs})
 
 @login_required
-def new_review(request, unique_identifier):
-    """Add a new review for a particular club."""
-    club = get_object_or_404(Club, unique_identifier=unique_identifier)
-
-    if request.method == 'POST':
-        # POST data submitted; process data.
-        form = ReviewForm(data=request.POST)
-        if form.is_valid():
-            new_review = form.save(commit=False)
-            new_review.club = club
-            new_review.save()
-            messages.success(request, 'Your review has been added successfully!')
-            return redirect('hobby_clubs:club', unique_identifier=unique_identifier)
-    else:
-        # No data submitted; create a blank form.
-        form = ReviewForm()
-
-    # Pass the club_id to the template.
-    context = {'club': club, 'form': form}
-    return render(request, 'hobby_clubs/new_review.html', context)
-
-@login_required
-def edit_review(request, review_id):
-    """Edit an existing review."""
-    review = get_object_or_404(Review, id=review_id)
-    club = review.club
-
-    if club.owner != request.user:
-        raise Http404
-
-    if request.method == 'POST':
-        form = ReviewForm(instance=review, data=request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Your review has been updated successfully!')
-            return redirect('hobby_clubs:club', unique_identifier=club.unique_identifier)
-    else:
-        form = ReviewForm(instance=review)
-
-    context = {'review': review, 'club': club, 'form': form }
-    return render(request, 'hobby_clubs/edit_review.html', context)
-
-# @login_required
-# def rate_club(request, unique_identifier):
-#     """Rate a particular club."""
-#     club = get_object_or_404(Club, unique_identifier=unique_identifier)
-#     user = request.user
-
-#     if request.method == 'POST':
-#         form = RatingForm(request.POST)
-#         if form.is_valid():
-#             rating_value = form.cleaned_data['rating']
-#             existing_rating = Rating.objects.filter(club=club, user=user).first()
-#             if existing_rating:
-#                 existing_rating.rating = rating_value
-#                 existing_rating.save()
-#                 messages.success(request, 'Your rating has been updated successfully!')
-#             else:
-#                 new_rating = Rating(club=club, user=user, rating=rating_value)
-#                 new_rating.save()
-#                 messages.success(request, 'Your rating has been added successfully!')
-#             return redirect('hobby_clubs:club', unique_identifier=unique_identifier)
-#     else:
-#         form = RatingForm()
-
-#     return render(request, 'hobby_clubs/rate_club.html', {'club': club, 'form': form})
-
+def sports_clubs(request):
+    sports_clubs = Club.objects.filter(category='Sports')
+    return render(request, 'hobby_clubs/sports_clubs.html', {'sports_clubs': sports_clubs})
 
 
 def search_clubs(request):
     if request.method == 'GET':
-        # 获取用户提交的搜索条件
         postal_code = request.GET.get('postcode')
         age = request.GET.get('age')
         club_type = request.GET.get('clubtype')
@@ -133,6 +49,9 @@ def search_clubs(request):
                     age == row['Age'] and
                     club_type == row['Category']):
                     matching_clubs.append(row)
+        if not matching_clubs:
+            message = "Apologies, there are currently no clubs that match your criteria. Please try different search criteria."
+            return render(request, 'hobby_clubs/search_results.html', {'message': message})
         
         return render(request, 'hobby_clubs/search_results.html', {'matching_clubs': matching_clubs})
 
@@ -141,7 +60,55 @@ from django.contrib.auth import logout
 def logout_view(request):
     if request.method == 'POST':
         logout(request)
-        print("用户已注销")
+        print("User loggedout")
         return redirect('hobby_clubs:index')
     return redirect('hobby_clubs:index') 
     
+from django.shortcuts import render, get_object_or_404
+from .models import Like, Club
+
+@login_required
+def like_club(request, club_name):
+    club = get_object_or_404(Club, club_name=club_name)
+    try:
+        like, created = Like.objects.get_or_create(user=request.user, club=club)
+        if created:
+            message = 'You have successfully liked this club!'
+        else:
+            like.delete()
+            message = 'You have successfully unliked this club!'
+        return JsonResponse({'success': True, 'message': message})
+    except Like.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Club not found'}, status=404)
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+@csrf_exempt  # 如果使用 AJAX，确保处理 CSRF 问题或在前端设置正确的 CSRF token
+def submit_review(request, club_name):
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))  # 解析 JSON 数据
+        content = data.get('content', '')
+        club_name = data.get('clubName', club_name) 
+        user = request.user
+        club = get_object_or_404(Club, club_name=club_name)
+
+        if not content:
+            return JsonResponse({'success': False, 'error': 'Content cannot be empty'}, status=400)
+
+        review = Review.objects.create(user=user, club=club, content=content)
+        return JsonResponse({'success': True})
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)
+
+
+@login_required
+def user_profile(request):
+    liked_clubs = Like.objects.filter(user=request.user).select_related('club')
+    user_reviews = Review.objects.filter(user=request.user).select_related('club')
+    return render(request, 'hobby_clubs/user_profile.html', {'user': request.user, 'liked_clubs': liked_clubs, 'user_reviews': user_reviews})
+
+
+
+

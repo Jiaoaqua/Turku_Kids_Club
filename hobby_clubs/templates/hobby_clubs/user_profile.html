@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <script>
+    window.csrf_token = "{{ csrf_token }}";
+  </script>
+  <style>
+    body,
+    ul {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-image: url('/static/images/userpage2.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      font-family: 'Open Sans', sans-serif;
+      padding: 20px;
+      color: #333;
+    }
+
+    .user-profile {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    }
+
+    h1,
+    h2 {
+      color: #5a3e36;
+      margin-bottom: 20px;
+    }
+
+    ul {
+      list-style-type: none;
+      padding-left: 20px;
+    }
+
+    li {
+      padding-bottom: 10px;
+    }
+
+    .club-link {
+      color: #007bff;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .club-link:hover {
+      color: #0056b3;
+    }
+
+    #userReviews li {
+      background-color: #f9f9f9;
+      padding: 10px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      transition: box-shadow 0.3s;
+    }
+
+    #userReviews li:hover {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="user-profile">
+    <h1>User Profile</h1>
+    <p>Hello, {{ user.username }}</p>
+    <p>Your Email Address: {{ user.email }}</p>
+    <p>Your Registration Date: {{ user.date_joined|date:"F j, Y" }}</p>
+
+    <!-- Display liked clubs -->
+    <h2>Liked Clubs:</h2>
+    <ul>
+      {% for liked_club in liked_clubs %}
+      <li><a href="{{ liked_club.club.website }}" class="club-link" target="_blank">{{ liked_club.club.club_name }}</a>
+      </li>
+      {% empty %}
+      <li>No clubs liked yet.</li>
+      {% endfor %}
+    </ul>
+
+    <!-- Display user reviews -->
+    <h2>Your Reviews:</h2>
+    <ul id="userReviews">
+      {% for review in user_reviews %}
+      <li>{{ review.club.club_name }}: {{ review.content }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+</body>
+
+</html>

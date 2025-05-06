@@ -12,7 +12,6 @@
 <body>
   <h1>New Review - {{ club.club_name }}</h1>
 
-  <!-- 显示评论表单 -->
   <form action="{% url 'hobby_clubs:new_review' unique_identifier=club.unique_identifier %}" method="post">
     {% csrf_token %}
     {{ review_form.as_p }}

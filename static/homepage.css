@@ -9,8 +9,7 @@
 
   .logo {
     margin: 30px;
-    width: 232px;
-    height: 107px;
+    width: 150px;
   }
 
 
@@ -68,7 +67,6 @@
 
   .map-image {
     position: relative;
-    /* 将 .map-image 设置为相对定位 */
     text-align: left;
     margin-left: 306px;
     margin-top: 20px;

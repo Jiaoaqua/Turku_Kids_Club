@@ -5,13 +5,13 @@ from django.db.models import Avg
 
 class Club(models.Model):
     club_name = models.CharField(max_length=100)
-    postal_code = models.CharField(max_length=20)  # 修改为小写
+    postal_code = models.CharField(max_length=20) 
     address = models.CharField(max_length=255)
-    age = models.IntegerField(default=0)
+    age = models.CharField(max_length=20)
     category = models.CharField(max_length=50)
     activity = models.CharField(max_length=100)
-    website = models.URLField()
-    unique_identifier = models.CharField(max_length=100, unique=True)
+    website = models.URLField(max_length=200)
+    # unique_identifier = models.CharField(max_length=100, unique=True)
 
     average_rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.00)
 
@@ -26,23 +26,14 @@ class Club(models.Model):
 
 
 class Review(models.Model):
-    my_review = models.TextField()
-    date_added = models.DateTimeField(auto_now_add=True)
-    date_modified = models.DateTimeField(auto_now=True)
-
-    club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name='reviews')
-
-    class Meta:
-        verbose_name_plural = 'reviews'
-
-    def __str__(self):
-        return f"{self.my_review[:50]}..."
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  
+    club = models.ForeignKey(Club, on_delete=models.CASCADE)
+    content = models.TextField() 
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
-class Rating(models.Model):
-    club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name='ratings')
+class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
+    club = models.ForeignKey(Club, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"{self.user.username}'s rating for {self.club.club_name}: {self.rating}"

@@ -7,6 +7,9 @@
   <title>Search Results</title>
   <style>
     body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       background-color: #e2e0fb;
       font-family: "Comic Sans MS";
       background-image: url("/static/images/background_all.jpg");
@@ -19,17 +22,28 @@
       margin-bottom: 30px;
     }
 
-    /* 修改列表项的样式 */
+    .home {
+      font-size: 20px;
+      text-decoration: none;
+      float: right;
+      margin-right: 20px;
+      color: #d20b0b !important;
+    }
+
+    .home:hover {
+      color: #984fe6 !important;
+    }
+
     ul {
       padding: 0;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
+      width: 90%;
     }
 
     li {
       width: 45%;
-      /* 使每行显示两个搜索结果 */
       margin-bottom: 20px;
       background-color: #d1bed1;
       border-radius: 10px;
@@ -37,37 +51,59 @@
       position: relative;
       padding: 20px;
       box-sizing: border-box;
-      /* 使 padding 不会影响盒子宽度 */
     }
 
-    /* 修改链接的样式 */
+
     a {
       color: #007bff;
       text-decoration: none;
     }
 
     a:hover {
-      text-decoration: underline;
+      color: #9e1344;
+    }
+
+    li img {
+      width: 30px;
+    }
+
+    .apologies {
+      font-size: 22px;
+      color: rgb(15, 15, 14);
+      text-align: center;
+
     }
   </style>
 </head>
 
 <body>
+  <!-- <a href="{% url 'hobby_clubs:index' %}" class="home">Back to Homepage</a> -->
+
   <h1>Exciting Discoveries Nearby</h1>
+
+  {% if matching_clubs %}
   <ul>
     {% for club in matching_clubs %}
     <li>
-      <strong>Club Name:</strong> {{ club.Club_Name }}<br>
-      <strong>Postal Code:</strong> {{ club.Postal_Code }}<br>
-      <strong>Address:</strong> {{ club.Address }}<br>
-      <strong>Age:</strong> {{ club.Age }}<br>
-      <strong>Category:</strong> {{ club.Category }}<br>
-      <strong>Activity:</strong> {{ club.Activity }}<br>
-      <strong>Website:</strong> <a href="{{ club.Website }}">{{ club.Website }}</a><br>
-
+      <img src="/static/images/membership-card.png"> <strong> Club Name: </strong>{{ club.Club_Name }}<br>
+      <img src="/static/images/zip-code.png"> <strong> Postal Code: </strong> {{ club.Postal_Code }}<br>
+      <img src="/static/images/location-pin.png"> <strong> Address:</strong>{{ club.Address }}<br>
+      <img src="/static/images/age-group.png"> <strong> Age:</strong> {{ club.Age }}<br>
+      <img src="/static/images/categories.png"><strong> Category:</strong> {{ club.Category }}<br>
+      <img src="/static/images/mobile.png"><strong> Activity:</strong> {{ club.Activity }}<br>
+      <img src="/static/images/boost.png"><strong> Website:</strong><a href="{{ club.Website }}"> {{ club.Website }}</a>
     </li>
     {% endfor %}
   </ul>
+  {% else %}
+  <p class="apologies">Apologies,</p>
+  <p class="apologies"> there are currently no clubs that match your criteria.
+  <p class="apologies"> Please try different search
+    criteria.</p>
+  {% endif %}
+
+  <a href="{% url 'hobby_clubs:index' %}" class="home">Back to Homepage</a>
+
 </body>
 
 </html>

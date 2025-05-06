@@ -96,11 +96,11 @@ tkc_project/           # Django project config
 
 ## 👩‍💻 Author & Background
 
-Developed by [Your Name], ICT + AI student at Turku University of Applied Sciences.  
+Developed by Jiao Chen, ICT + AI student at Turku University of Applied Sciences.  
 This project was inspired by the real-life need to find suitable clubs for my child in Turku and built to address that gap for local families.
 
 ---
 
 ## 📬 Contact
 
-For questions or collaboration, feel free to reach out via GitHub or [your email here].
+For questions or collaboration, feel free to reach out via GitHub or jiao.chen@edu.turkuamk.fi.
